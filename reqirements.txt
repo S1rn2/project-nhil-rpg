@@ -1,0 +1,73 @@
+You are an expert Minecraft Fabric Mod Developer targeting Minecraft Java 1.21.11 using Yarn mappings (`net.fabricmc:yarn`). You are expanding my existing mod "Project Nhil: RPG Edition" (`projectnhilrpgforminecraftjava`) to incorporate every visual element, structure, boss, item, and mechanic shown in my reference screenshots, PLUS your own creative, cohesive Vanilla+ RPG additions—while keeping the entire mod strictly lightweight for an 8 GB RAM Dell laptop.
+
+=== 1. EXISTING PROJECT ARCHITECTURE (PRESERVE 100% COMPATIBILITY) ===
+- Project Path: `C:\Users\Susil Kotal\Desktop\V01sZ3n\source`
+- Mod ID: `projectnhilrpgforminecraftjava` (`PGPlugin.MOD_ID`)
+- Base Package: `net.ibbxourroygsdb.projectnhilrpgforminecraftjava`
+- Client Package: `net.ibbxourroygsdb.projectnhilrpgforminecraftjava.client`
+- Existing Classes Already Compiled & Working:
+  * `PGPlugin.java`: Main entrypoint calling `NhilProgress.bootstrap()`, `NhilRpgData.bootstrap()`, `NhilContent.initialize()`, `NhilGameplay.register()`, `NhilQuests.register()`, `NhilBosses.register()`, `NhilWorldgen.register()`, `NhilElites.register()`, `NhilCommands.register()`, `NhilLoot.register()`.
+  * `NhilProgress.java`: Fabric Data Attachment (`level` 1–20, `experience`, `relics`, `discoveries`).
+  * `NhilRpgData.java`: Fabric Data Attachment (`skillPoints`, `unlockedSkills`, `activeQuests`, `completedQuests`, `defeatedBosses`, `ofClient(player)`).
+  * `NhilContent.java`: Blocks (`RUIN_BRICK`, `MOSSY_RUIN_BRICK`, `DEEP_RUIN_TILE`, `RUNE_LAMP`, `RUNE_ALTAR`) and Items (`RUNE_SHARD`, `ANCIENT_RELIC`, `WAYFINDER_COMPASS`, `RUNE_TONIC`, `NHIL_BLADE`), plus `ItemAccess.register(key, item)` and `BlockAccess.register(key, block)`.
+  * `NhilWeapons.java`, `NhilGear.java`, `NhilConsumables.java`, `AetherialBowItem.java`, `NhilScepterItem.java`, `AscendantRelicBladeItem.java`: Tiered weapons (`ruin_carver_dagger`, `wayfarer_spear`, `ruinforged_greataxe`, `runesteel_longsword`, `aetherial_recurve_bow`, `wardens_halberd`, `nhil_scepter`, `ascendant_relic_blade`), materials (`runesteel_ingot`, `rune_plating`, `nhil_core`), and consumables (`greater_rune_tonic`, `draught_of_vitality`).
+  * `NhilSkills.java` & `client/NhilSkillScreen.java` & `UnlockSkillPayload.java`: 15-node skill tree (Vanguard, Wayfarer, Arcanist) + Quest Log toggle screen opened with `K`.
+  * `NhilQuests.java`: Multi-stage event-driven quest chains.
+  * `NhilBosses.java`: Boss tracking, `ServerBossBar`, telegraphed attacks, first-kill skill points, and Rune Altar summoning.
+  * `NhilWorldgen.java`: BiomeModifications feature-based structures (`ruin_camp`, `watchtower`, `rune_shrine`, `ruined_keep`, `subterranean_vault`, `warden_dungeon`).
+
+=== 2. VERIFIED YARN 1.21.11+build.4 API SIGNATURES (MUST FOLLOW) ===
+- `Item.Settings().registryKey(key)` and `AbstractBlock.Settings.create().registryKey(key)` are required before registering items/blocks.
+- `appendTooltip` takes 5 parameters: `(ItemStack stack, Item.TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type)`.
+- `KeyBinding` category uses `KeyBinding.Category.create(Identifier.of("projectnhilrpgforminecraftjava", "nhil"))` (NOT a String).
+- `Screen` in 1.21.11 uses `addDrawable(...)` and `addDrawableChild(...)` inside `init()` instead of overriding `Screen.render(...)`.
+- Knockback uses `target.takeKnockback(strength, x, z)` (do NOT access `target.velocityModified` directly).
+- Entity damage uses `target.damage(serverWorld, damageSource, amount)`.
+- All Java files MUST be saved as UTF-8 without BOM.
+
+=== 3. PERFORMANCE & AESTHETIC CONSTRAINTS (HIGHEST PRIORITY) ===
+- Designed for an 8 GB RAM laptop: ZERO external library dependencies, ZERO per-tick global world or entity scans, low particle counts (<= 20 per event), and no heavy custom animations.
+- Pure Vanilla+ medieval fantasy aesthetic using standard Minecraft blocks + existing Nhil ruin blocks.
+
+=== 4. CORE UPGRADE REQUIREMENTS (FROM REFERENCE SHEETS) ===
+
+#### A. 7-Tier Returning Throwing Discs (`NhilDiscs.java`)
+- Add 7 Throwing Disc items: **Copper (`copper_disc`), Iron (`iron_disc`), Gold (`gold_disc`), Diamond (`diamond_disc`), Netherite (`netherite_disc`), Emerald (`emerald_disc`), and Obsidian (`obsidian_disc`)**.
+- Implement true boomerang returning projectile physics: right-click throws the disc forward with minimal particles; upon hitting an entity or traveling ~14 ticks, it curves back directly into the thrower's inventory (or drops cleanly if full), consumes 1 durability per throw, scales damage with Vanguard combat skills, and includes vanilla crafting recipes, client `items/*.json`, `models/item/*.json`, `en_us.json` entries, and dungeon chest loot integration.
+
+#### B. Reference-Accurate Structures & Dungeons (`NhilWorldgen.java`)
+Upgrade existing structures and add new ones matching all 5 reference sheets:
+1. **Overgrown Medieval Watchtower (Sheet 1 & 4):** Tall crumbling stone/ruin-brick tower with oak log framing, leafy vines (`VINE` / `MOSS_CARPET` / `OAK_LEAVES`), lanterns, and red/cyan wildflowers (`POPPY`, `CORNFLOWER`, `BLUE_ORCHID`) scattered around the grassy base.
+2. **Mossy Underground Treasure Vault (Sheet 1 & 2):** Subterranean stone-brick chamber with mossy stone columns, cobwebs in the corners, warm torch/lantern lighting, and a central treasure chest surrounded by raw gold/gold block treasure piles.
+3. **Multi-Room Stone-Brick Dungeon & Grand Sanctum (Sheet 2 & 5):** Connected stone-brick corridors lined with loot chests, a central stone-pillar altar chamber draped in vines and hanging lanterns, a sunken stone/magma crater shrine, and a secret treasure room hidden behind `mossy_ruin_brick`.
+4. **Fortified Spruce-Forest Ruin Compound & Hilltop Citadel (Sheet 3 & 5):** Walled medieval stone fortress courtyard with battlement walkways, central courtyard keep, and a multi-level chest storage hall.
+5. **Medieval Blacksmith & Wayfarer Outpost (Sheet 5):** Cozy timber-and-stone medieval outpost with pitched terracotta/brick roof, chimney campfire, anvil, furnace, grindstone, barrels, and supply chests.
+
+#### C. Reference-Accurate Bosses (`NhilBosses.java`)
+1. **Ruin Warden Construct (Sheet 1 Armored Stone Golem):** Upgrade to a large `IronGolemEntity` guardian base with high knockback resistance, `ServerBossBar`, telegraphed ground-slam AoE knockback, and relic/shard drops.
+2. **Aetherial Archon / Winged Flame Guardian (Sheet 2):** Upgrade to an airborne/winged stone-arena guardian (`PhantomEntity` or `BlazeEntity` base with custom scale/armor) that telegraphs before unleashing a ring of fire/soul-flame bursts and slowness waves.
+3. **Abyssal Dredge Knight:** Dark netherite-armored melee champion guarding deep dungeon sanctums.
+
+#### D. Dedicated Active Class Ability Keybind (`Z` Key)
+- Register keybind **`Z`** ("Activate Nhil Class Ability") in `NhilClient.java` using `GLFW.GLFW_KEY_Z` and send a C2S `CustomPayload` (`ActivateAbilityPayload`).
+- Pressing `Z` triggers an active class ability based on the player's highest unlocked skill branch (with a server-enforced cooldown & actionbar feedback):
+  * **Vanguard Warcry:** Grants brief Resistance + Strength and knocks back nearby monsters.
+  * **Wayfarer Windstep:** Grants a forward dash burst + Speed II for 3 seconds.
+  * **Arcanist Rune Nova:** Releases a localized arcane pulse damaging and slowing nearby hostiles.
+
+#### E. Lightweight RPG Biomes (4–5 Total Biomes)
+- Create **4–5 data-driven Vanilla+ biomes** (`worldgen/biome/*.json`) with custom sky/fog/water/foliage tints, ambient particles, structure pairings, and discovery XP/quest hooks when entered:
+  1. `rune_weald` (misty enchanted ancient forest with teal foliage & Rune Shrines)
+  2. `sunken_ruins_marsh` (mossy wetland with flooded ruin pillars & Ruined Keeps)
+  3. Plus **2–3 additional original biomes of your choice** (e.g., an ash/volcanic crater badlands for the sunken lava shrine in Sheet 2, a blossom-ruin highland valley from Sheet 3, and/or a deep subterranean rune cavern) — keeping worldgen fast and lightweight!
+
+=== 5. CREATIVE EXPANSION FREEDOM (ADD EXTRA FITTING FEATURES!) ===
+Beyond the requirements above, **proactively design and implement additional lightweight Vanilla+ RPG features** that elevate the mod and match the medieval-fantasy adventure feel of the reference sheets, such as:
+- **Wayfarer Relic Merchants (`NhilMerchants.java`):** Named scholars/blacksmiths spawning at Blacksmith Outposts & Ruined Keeps with custom trades (`rune_shard` / `emerald` / `ancient_relic` -> tiered weapons, throwing discs, tonics).
+- **Additional World Bosses or Mini-Bosses:** Add 1–2 extra themed guardians (e.g., an *Ashen Crater Colossus* or *Sanctum Geomancer*) summoned via special altar offerings or guarding deep structures.
+- **Extra Artifacts, Off-Hand Charms/Talismans, or Weapon Runes:** Add lightweight passive/active trinkets or rune-infusion recipes (e.g., *Wayfarer's Lantern*, *Warden's Heart Talisman*, *Aetherial Dash Charm*) that complement the skill tree without heavy tick overhead.
+- **Additional Quests & Lore:** Expand `NhilQuests.java` with new quest chains covering the Throwing Discs, new biomes, merchants, and extra bosses.
+
+=== 6. EXECUTION INSTRUCTIONS ===
+- Inspect the existing files in `C:\Users\Susil Kotal\Desktop\V01sZ3n\source` first so you extend rather than break anything.
+- Implement every file completely (no `// TODO` stubs), generate all required JSON models/recipes/worldgen/biome/lang files, and run `.\gradlew.bat build` until `BUILD SUCCESSFUL` with zero errors.
