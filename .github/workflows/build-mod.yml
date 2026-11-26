@@ -3,16 +3,18 @@ name: Build Nhil RPG Mod with AI
 on:
   workflow_dispatch:
     inputs:
+      run_ai_agent:
+        description: 'Run AI agent to generate missing JSON assets? (true/false)'
+        required: true
+        default: 'true'
       task_prompt:
         description: 'Instructions for the AI agent'
         required: true
         default: >
-          1. Inspect the Java files in this mod project.
-          2. Write and run a short Python script to generate any remaining missing JSON files
-          (item models, armor/weapon recipes, loot tables, and en_us.json translations),
-          then delete the temporary Python script.
-          3. Run `./gradlew build` to check for compiler errors, fix any issues found, and
-          verify `./gradlew build` passes. Do not repeat failing commands more than twice.
+          Inspect the Java files in src/main/java to see what items, blocks, and entities exist,
+          and compare against src/main/resources. Write and run ONE short Python script to generate
+          any missing item models, blockstates, recipes, loot tables, or en_us.json entries, then
+          delete the Python script. Do NOT run ./gradlew build inside this step.
 
 permissions:
   contents: write
@@ -56,14 +58,14 @@ jobs:
 
       - name: Setup Gradle caching
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-root-directory: ${{ steps.find-mod.outputs.dir }}
 
       - name: Make gradlew executable
         working-directory: ${{ steps.find-mod.outputs.dir }}
         run: chmod +x gradlew
 
       - name: Run AI Coding Agent (GitHub Models)
+        if: ${{ github.event.inputs.run_ai_agent == 'true' }}
+        timeout-minutes: 6
         working-directory: ${{ steps.find-mod.outputs.dir }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -74,7 +76,7 @@ jobs:
             "$schema": "https://opencode.ai",
             "agent": {
               "build": {
-                "steps": 40
+                "steps": 15
               }
             },
             "provider": {
@@ -86,15 +88,15 @@ jobs:
                   "apiKey": "{env:GITHUB_TOKEN}"
                 },
                 "models": {
-                  "gpt-4.1": {
-                    "name": "GPT-4.1"
+                  "gpt-4.1-mini": {
+                    "name": "GPT-4.1 Mini"
                   }
                 }
               }
             }
           }
           EOF
-          opencode run -m github-models/gpt-4.1 "${{ github.event.inputs.task_prompt }}"
+          opencode run -m github-models/gpt-4.1-mini "${{ github.event.inputs.task_prompt }}" || echo "AI step finished or hit step limit, continuing to build..."
           rm -f opencode.json
 
       - name: Final Gradle Build Verification
