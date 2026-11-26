@@ -38,11 +38,31 @@ jobs:
 
       - name: Run AI Coding Agent (GitHub Models)
         env:
-          OPENAI_API_KEY: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_BASE_URL: https://models.inference.ai.azure.com
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm install -g opencode-ai
-          opencode run -m openai/gpt-4o-mini "${{ github.event.inputs.task_prompt }}"
+          npm install -g --allow-scripts=opencode-ai opencode-ai
+          cat << 'EOF' > opencode.json
+          {
+            "$schema": "https://opencode.ai/config.json",
+            "provider": {
+              "github-models": {
+                "npm": "@ai-sdk/openai-compatible",
+                "name": "GitHub Models",
+                "options": {
+                  "baseURL": "https://github.ai",
+                  "apiKey": "{env:GITHUB_TOKEN}"
+                },
+                "models": {
+                  "openai/gpt-4.1-mini": {
+                    "name": "GPT-4.1 Mini"
+                  }
+                }
+              }
+            }
+          }
+          EOF
+          opencode run --print-logs -m github-models/openai/gpt-4.1-mini "${{ github.event.inputs.task_prompt }}"
+          rm -f opencode.json
 
       - name: Final Gradle Build Verification
         run: gradle build
