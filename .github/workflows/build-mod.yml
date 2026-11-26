@@ -65,7 +65,8 @@ jobs:
 
       - name: Run AI Coding Agent (GitHub Models)
         if: ${{ github.event.inputs.run_ai_agent == 'true' }}
-        timeout-minutes: 6
+        continue-on-error: true
+        timeout-minutes: 5
         working-directory: ${{ steps.find-mod.outputs.dir }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -74,6 +75,9 @@ jobs:
           cat << 'EOF' > opencode.json
           {
             "$schema": "https://opencode.ai",
+            "permission": {
+              "*": "allow"
+            },
             "agent": {
               "build": {
                 "steps": 15
@@ -96,7 +100,7 @@ jobs:
             }
           }
           EOF
-          opencode run -m github-models/gpt-4.1-mini "${{ github.event.inputs.task_prompt }}" || echo "AI step finished or hit step limit, continuing to build..."
+          opencode run -m github-models/gpt-4.1-mini "${{ github.event.inputs.task_prompt }}"
           rm -f opencode.json
 
       - name: Final Gradle Build Verification
