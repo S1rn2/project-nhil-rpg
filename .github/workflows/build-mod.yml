@@ -1,1 +1,0 @@
-Run ./gradlew build first to check for any compiler errors in the newly added Java files and fix them. Then generate all remaining missing JSON files (item models, armor/weapon recipes, loot tables, and en_us.json entries) for NhilWeapons, NhilGear, and NhilBosses using a quick Python script rather than writing them one by one. Run ./gradlew build again until it succeeds.
