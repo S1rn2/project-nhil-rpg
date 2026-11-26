@@ -1,0 +1,65 @@
+name: AI Build Project Nhil Mod
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: 'OpenRouter model ID (e.g. openrouter/google/gemini-2.5-pro or openrouter/deepseek/deepseek-r1:free)'
+        required: true
+        default: 'openrouter/google/gemini-2.5-pro'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unzip merged source if needed
+        run: |
+          if [ -f "ProjectNhil-ThrowingDiscs-Merged-source.zip" ] && [ ! -f "build.gradle" ]; then
+            unzip -q ProjectNhil-ThrowingDiscs-Merged-source.zip
+            cp -rn ProjectNhil-ThrowingDiscs/* .
+            rm -rf ProjectNhil-ThrowingDiscs
+          fi
+
+      - name: Set up Java 21 & Node
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install OpenCode AI Agent
+        run: npm install -g opencode-ai
+
+      - name: Generate Mod Features with OpenRouter AI
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          chmod +x gradlew
+          opencode run -m "${{ inputs.model }}" "Read reqirements.txt and inspect all_sheets.png in the workspace root. Note that the 7-tier Returning Throwing Discs (discs/ package under namespace throwingdiscs) are already implemented—keep them 100% intact and add dungeon loot integration for them. Implement all remaining requirements and creative additions from reqirements.txt completely (no TODO stubs), strictly following the Yarn 1.21.11 API rules and 8 GB RAM lightweight constraints. Run ./gradlew build and fix any compiler errors until BUILD SUCCESSFUL."
+
+      - name: Verify Gradle Build
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
+      - name: Save Generated Code to Repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@://github.com"
+          git add .
+          git commit -m "AI build: implement Project Nhil RPG features" || true
+          git push || true
+
+      - name: Upload Compiled Mod JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: ProjectNhil-Mod-JAR
+          path: build/libs/*.jar
