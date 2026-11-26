@@ -43,25 +43,25 @@ jobs:
           npm install -g --allow-scripts=opencode-ai opencode-ai
           cat << 'EOF' > opencode.json
           {
-            "$schema": "https://opencode.ai/config.json",
+            "$schema": "https://opencode.ai",
             "provider": {
               "github-models": {
                 "npm": "@ai-sdk/openai-compatible",
                 "name": "GitHub Models",
                 "options": {
-                  "baseURL": "https://github.ai",
+                  "baseURL": "https://azure.com",
                   "apiKey": "{env:GITHUB_TOKEN}"
                 },
                 "models": {
-                  "openai/gpt-4.1-mini": {
-                    "name": "GPT-4.1 Mini"
+                  "gpt-4o-mini": {
+                    "name": "GPT-4o Mini"
                   }
                 }
               }
             }
           }
           EOF
-          opencode run --print-logs -m github-models/openai/gpt-4.1-mini "${{ github.event.inputs.task_prompt }}"
+          opencode run --print-logs -m github-models/gpt-4o-mini "${{ github.event.inputs.task_prompt }}"
           rm -f opencode.json
 
       - name: Final Gradle Build Verification
@@ -70,7 +70,7 @@ jobs:
       - name: Commit and Push AI Changes
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "github-actions[bot]@://github.com"
           git add .
           git diff --staged --quiet || git commit -m "Complete mod features and JSON assets"
           git push
