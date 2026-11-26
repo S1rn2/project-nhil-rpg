@@ -7,11 +7,11 @@ on:
         description: 'Instructions for the AI agent'
         required: true
         default: >
-          Run gradle build to check for any compiler errors in the new Java files and fix them.
-          Then write and run a short Python script to generate all remaining missing JSON files
-          (item models, armor/weapon recipes, loot tables, and en_us.json translations) for
-          NhilWeapons, NhilGear, NhilBosses, and NhilWorldgen. Delete the temporary Python script
-          when done, then run gradle build until it succeeds cleanly.
+          1. Inspect the Java files for NhilWeapons, NhilGear, NhilBosses, and NhilWorldgen.
+          2. Write and run a short Python script to generate all missing JSON files (item models,
+          armor/weapon recipes, loot tables, and en_us.json translations), then delete the script.
+          3. Run `gradle build` once to check for compiler errors, fix any issues found, and
+          verify `gradle build` passes. Do not repeat failing commands more than twice.
 
 permissions:
   contents: write
@@ -20,6 +20,7 @@ permissions:
 jobs:
   build-mod:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -44,6 +45,11 @@ jobs:
           cat << 'EOF' > opencode.json
           {
             "$schema": "https://opencode.ai",
+            "agent": {
+              "build": {
+                "steps": 40
+              }
+            },
             "provider": {
               "github-models": {
                 "npm": "@ai-sdk/openai-compatible",
@@ -53,15 +59,15 @@ jobs:
                   "apiKey": "{env:GITHUB_TOKEN}"
                 },
                 "models": {
-                  "gpt-4o-mini": {
-                    "name": "GPT-4o Mini"
+                  "gpt-4.1": {
+                    "name": "GPT-4.1"
                   }
                 }
               }
             }
           }
           EOF
-          opencode run --print-logs -m github-models/gpt-4o-mini "${{ github.event.inputs.task_prompt }}"
+          opencode run -m github-models/gpt-4.1 "${{ github.event.inputs.task_prompt }}"
           rm -f opencode.json
 
       - name: Final Gradle Build Verification
