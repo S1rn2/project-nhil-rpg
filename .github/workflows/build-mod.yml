@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  models: read
 
 jobs:
   build-mod:
@@ -36,12 +37,13 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Run AI Coding Agent (Gemini 2.5 Flash)
+      - name: Run AI Coding Agent (GitHub Models)
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_BASE_URL: https://azure.com
         run: |
-          npm install -g @google/gemini-cli
-          gemini -m gemini-2.5-flash -y -p "${{ github.event.inputs.task_prompt }}"
+          npm install -g opencode-ai
+          opencode run -m openai/gpt-4o-mini "${{ github.event.inputs.task_prompt }}"
 
       - name: Final Gradle Build Verification
         run: ./gradlew build
@@ -51,7 +53,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@://github.com"
           git add .
-          git diff --staged --quiet || git commit -m "Complete mod features and JSON assets via Gemini"
+          git diff --staged --quiet || git commit -m "Complete mod features and JSON assets"
           git push
 
       - name: Upload Compiled Mod JAR
