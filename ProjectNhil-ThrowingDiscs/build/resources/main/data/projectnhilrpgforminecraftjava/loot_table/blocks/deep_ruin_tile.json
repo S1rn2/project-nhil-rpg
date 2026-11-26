@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        { "condition": "minecraft:survives_explosion" }
+      ],
+      "entries": [
+        { "type": "minecraft:item", "name": "projectnhilrpgforminecraftjava:deep_ruin_tile" }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "projectnhilrpgforminecraftjava:blocks/deep_ruin_tile"
+}

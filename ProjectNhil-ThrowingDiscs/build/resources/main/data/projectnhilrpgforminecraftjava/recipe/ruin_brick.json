@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "S": "minecraft:cracked_stone_bricks",
+    "M": "minecraft:cobblestone"
+  },
+  "pattern": [
+    "SM",
+    "MS"
+  ],
+  "result": { "count": 4, "id": "projectnhilrpgforminecraftjava:ruin_brick" }
+}

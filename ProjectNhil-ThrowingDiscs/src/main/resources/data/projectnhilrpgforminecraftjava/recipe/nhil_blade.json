@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "N": "minecraft:netherite_ingot",
+    "R": "projectnhilrpgforminecraftjava:rune_shard",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    " N ",
+    " R ",
+    " S "
+  ],
+  "result": { "count": 1, "id": "projectnhilrpgforminecraftjava:nhil_blade" }
+}

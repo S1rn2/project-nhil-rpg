@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "minecraft:compass",
+    "E": "minecraft:echo_shard",
+    "G": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    " G ",
+    "ECE",
+    " G "
+  ],
+  "result": { "count": 1, "id": "projectnhilrpgforminecraftjava:wayfinder_compass" }
+}

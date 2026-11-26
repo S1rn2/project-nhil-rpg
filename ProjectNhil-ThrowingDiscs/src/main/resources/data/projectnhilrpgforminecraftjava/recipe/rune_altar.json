@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": "minecraft:amethyst_block",
+    "S": "projectnhilrpgforminecraftjava:rune_shard",
+    "D": "projectnhilrpgforminecraftjava:deep_ruin_tile"
+  },
+  "pattern": [
+    " S ",
+    " D ",
+    "AAA"
+  ],
+  "result": { "count": 1, "id": "projectnhilrpgforminecraftjava:rune_altar" }
+}

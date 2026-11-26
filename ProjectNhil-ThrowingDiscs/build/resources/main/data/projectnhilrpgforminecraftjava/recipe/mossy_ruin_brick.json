@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "projectnhilrpgforminecraftjava:ruin_brick",
+    "minecraft:vine"
+  ],
+  "result": { "count": 1, "id": "projectnhilrpgforminecraftjava:mossy_ruin_brick" }
+}

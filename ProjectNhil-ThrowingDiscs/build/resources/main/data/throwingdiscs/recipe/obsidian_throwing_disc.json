@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " # ",
+    "# #",
+    " # "
+  ],
+  "key": {
+    "#": "minecraft:obsidian"
+  },
+  "result": {
+    "id": "throwingdiscs:obsidian_throwing_disc",
+    "count": 1
+  }
+}

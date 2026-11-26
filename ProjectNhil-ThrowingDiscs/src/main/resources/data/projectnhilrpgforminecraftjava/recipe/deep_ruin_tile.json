@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "S": "projectnhilrpgforminecraftjava:ruin_brick",
+    "D": "minecraft:deepslate_tiles"
+  },
+  "pattern": [
+    "SD",
+    "DS"
+  ],
+  "result": { "count": 4, "id": "projectnhilrpgforminecraftjava:deep_ruin_tile" }
+}

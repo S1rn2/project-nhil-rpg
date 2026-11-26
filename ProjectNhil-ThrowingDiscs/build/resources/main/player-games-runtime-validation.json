@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "server_commands": [
+    "nhil",
+    "nhil status",
+    "nhil landmarks",
+    "nhil ranks",
+    "nhil grant 5",
+    "nhil relic"
+  ]
+}

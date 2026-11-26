@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " # ",
+    "# #",
+    " # "
+  ],
+  "key": {
+    "#": "minecraft:iron_ingot"
+  },
+  "result": {
+    "id": "throwingdiscs:iron_throwing_disc",
+    "count": 1
+  }
+}

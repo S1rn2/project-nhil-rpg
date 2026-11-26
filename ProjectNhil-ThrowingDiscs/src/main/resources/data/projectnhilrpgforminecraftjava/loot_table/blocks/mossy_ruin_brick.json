@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        { "condition": "minecraft:survives_explosion" }
+      ],
+      "entries": [
+        { "type": "minecraft:item", "name": "projectnhilrpgforminecraftjava:mossy_ruin_brick" }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "projectnhilrpgforminecraftjava:blocks/mossy_ruin_brick"
+}

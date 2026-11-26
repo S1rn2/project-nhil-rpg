@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "projectnhilrpgforminecraftjava:block/mossy_ruin_brick"
+  }
+}

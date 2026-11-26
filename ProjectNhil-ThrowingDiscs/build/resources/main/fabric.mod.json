@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "projectnhilrpgforminecraftjava",
+  "version": "1.1.0",
+  "name": "Project Nhil RPG for Minecraft Java",
+  "description": "A lightweight, vanilla-style RPG adventure layer: hidden ruin blocks, landmark discovery, Nhil levels, relics and a wayfinder compass. Includes seven throwing discs that ricochet, pierce and return.",
+  "authors": [
+    "PlayerGames LLC"
+  ],
+  "license": "All Rights Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.ibbxourroygsdb.projectnhilrpgforminecraftjava.PGPlugin"
+    ],
+    "client": [
+      "net.ibbxourroygsdb.projectnhilrpgforminecraftjava.client.NhilClient",
+      "net.ibbxourroygsdb.projectnhilrpgforminecraftjava.client.ThrowingDiscsClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "G": "minecraft:glowstone",
+    "S": "projectnhilrpgforminecraftjava:ruin_brick"
+  },
+  "pattern": [
+    " A ",
+    "ASA",
+    " G "
+  ],
+  "result": { "count": 2, "id": "projectnhilrpgforminecraftjava:rune_lamp" }
+}
