@@ -7,11 +7,11 @@ on:
         description: 'Instructions for the AI agent'
         required: true
         default: >
-          Run ./gradlew build to check for any compiler errors in the new Java files and fix them.
+          Run gradle build to check for any compiler errors in the new Java files and fix them.
           Then write and run a short Python script to generate all remaining missing JSON files
           (item models, armor/weapon recipes, loot tables, and en_us.json translations) for
           NhilWeapons, NhilGear, NhilBosses, and NhilWorldgen. Delete the temporary Python script
-          when done, then run ./gradlew build until it succeeds cleanly.
+          when done, then run gradle build until it succeeds cleanly.
 
 permissions:
   contents: write
@@ -26,32 +26,31 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle caching
         uses: gradle/actions/setup-gradle@v4
-
-      - name: Make gradlew executable
-        run: chmod +x gradlew
+        with:
+          gradle-version: '8.8'
 
       - name: Run AI Coding Agent (GitHub Models)
         env:
           OPENAI_API_KEY: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_BASE_URL: https://azure.com
+          OPENAI_BASE_URL: https://models.inference.ai.azure.com
         run: |
           npm install -g opencode-ai
           opencode run -m openai/gpt-4o-mini "${{ github.event.inputs.task_prompt }}"
 
       - name: Final Gradle Build Verification
-        run: ./gradlew build
+        run: gradle build
 
       - name: Commit and Push AI Changes
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@://github.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git diff --staged --quiet || git commit -m "Complete mod features and JSON assets"
           git push
