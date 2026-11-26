@@ -7,11 +7,12 @@ on:
         description: 'Instructions for the AI agent'
         required: true
         default: >
-          1. Inspect the Java files for NhilWeapons, NhilGear, NhilBosses, and NhilWorldgen.
-          2. Write and run a short Python script to generate all missing JSON files (item models,
-          armor/weapon recipes, loot tables, and en_us.json translations), then delete the script.
-          3. Run `gradle build` once to check for compiler errors, fix any issues found, and
-          verify `gradle build` passes. Do not repeat failing commands more than twice.
+          1. Inspect the Java files in this mod project.
+          2. Write and run a short Python script to generate any remaining missing JSON files
+          (item models, armor/weapon recipes, loot tables, and en_us.json translations),
+          then delete the temporary Python script.
+          3. Run `./gradlew build` to check for compiler errors, fix any issues found, and
+          verify `./gradlew build` passes. Do not repeat failing commands more than twice.
 
 permissions:
   contents: write
@@ -21,6 +22,9 @@ jobs:
   build-mod:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: ./ProjectNhil-ThrowingDiscs
 
     steps:
       - name: Checkout repository
@@ -34,8 +38,9 @@ jobs:
 
       - name: Setup Gradle caching
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.8'
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
 
       - name: Run AI Coding Agent (GitHub Models)
         env:
@@ -71,7 +76,7 @@ jobs:
           rm -f opencode.json
 
       - name: Final Gradle Build Verification
-        run: gradle build
+        run: ./gradlew build
 
       - name: Commit and Push AI Changes
         run: |
@@ -86,6 +91,6 @@ jobs:
         with:
           name: project-nhil-rpg-mod
           path: |
-            build/libs/*.jar
-            !build/libs/*-sources.jar
-            !build/libs/*-dev.jar
+            ProjectNhil-ThrowingDiscs/build/libs/*.jar
+            !ProjectNhil-ThrowingDiscs/build/libs/*-sources.jar
+            !ProjectNhil-ThrowingDiscs/build/libs/*-dev.jar
